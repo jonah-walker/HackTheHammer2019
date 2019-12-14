@@ -162,6 +162,7 @@ def main():
     while capture.isOpened():
         pressed_key = cv2.waitKey(1)
         _, frame = capture.read()
+        frame = cv2.flip(frame, 1)
 
         if pressed_key & 0xFF == ord('z'):
             is_hand_hist_created = True
@@ -172,9 +173,9 @@ def main():
 
         else:
             frame = draw_rect(frame)
-            frame = cv2.flip(frame, 1)
 
-        cv2.imshow("Live Feed", rescale_frame(frame))
+        cv2.imshow("Finger Tracker", rescale_frame(frame, 100, 100))
+        #cv2.resizeWindow("Finger Tracker", 1280, 720)
 
         if pressed_key == 27:
             break
