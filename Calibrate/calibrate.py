@@ -7,12 +7,21 @@ from array import *
 path = "C:\dev\hth\\test\\"
 cap = cv2.VideoCapture(0)
 
+paintWindow = np.zeros((471,636,3)) + 255
+paintWindow = cv2.rectangle(paintWindow, (40,1), (140,65), (0,0,0), 2)
+
+
 while(True):
-    ret, frame = cap.read()
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
-    cv2.imshow('frame', rgb)
-    
-    #rect not coming on 
+
+    #rect not coming on
+    (grabbed, frame) = cap.read()
+    frame = cv2.flip(frame, 1)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+    # Add the coloring options to the frame
+    frame = cv2.rectangle(frame, (270,190), (370,290), (255,0,0), 2)
+    cv2.imshow("Tracking", frame)
+
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         out = cv2.imwrite(os.path.join(path , 'sensor.jpg'), frame)
