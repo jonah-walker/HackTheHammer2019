@@ -39,7 +39,7 @@ cv2.putText(paintWindow, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (15
 cv2.namedWindow('Paint', cv2.WINDOW_AUTOSIZE)
 
 # Load the video
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 # Keep looping
 while True:
