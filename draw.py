@@ -146,9 +146,13 @@ while True:
     cv2.imshow("Tracking", frame)
     cv2.imshow("Paint", paintWindow)
 
+    k = cv2.waitKey(1)
+    if k == ord(" "):
+        crop_img = paintWindow[66:480, 0:640] # Crop from {x, y, w, h } => {0, 0, 300, 400}
+        cv2.imwrite("test.png", crop_img)
+
 	# If the 'q' key is pressed, stop the loop
-    if cv2.waitKey(1) & 0xFF == ord("q"):
-        cv2.imwrite("test.png", paintWindow)
+    elif k == ord("q"):
         break
 
 # Cleanup the camera and close any open windows
