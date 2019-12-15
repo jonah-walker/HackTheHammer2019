@@ -39,7 +39,9 @@ cv2.putText(paintWindow, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (15
 cv2.namedWindow('Paint', cv2.WINDOW_AUTOSIZE)
 
 # Load the video
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
+letterToDraw = 97
 
 # Keep looping
 while True:
@@ -59,6 +61,7 @@ while True:
     cv2.putText(frame, "GREEN", (298, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "RED", (420, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150,150,150), 2, cv2.LINE_AA)
+    cv2.putText(frame, chr(letterToDraw), (230, 350), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (150,150,150), 20, cv2.LINE_AA)
 
     # Check to see if we have reached the end of the video
     if not grabbed:
@@ -143,8 +146,28 @@ while True:
     cv2.imshow("Tracking", frame)
     cv2.imshow("Paint", paintWindow)
 
+    k = cv2.waitKey(1)
+    if k == ord(" "):
+        crop_img = paintWindow[70:480, 0:640] # Crop from {x, y, w, h } => {0, 0, 300, 400}
+        cv2.imwrite("test_" + chr(letterToDraw) + ".png", crop_img)
+        if letterToDraw == 99:
+            break
+        else:
+            letterToDraw+=1
+        bpoints = [deque(maxlen=512)]
+        gpoints = [deque(maxlen=512)]
+        rpoints = [deque(maxlen=512)]
+        ypoints = [deque(maxlen=512)]
+
+        bindex = 0
+        gindex = 0
+        rindex = 0
+        yindex = 0
+
+        paintWindow[67:,:,:] = 255
+
 	# If the 'q' key is pressed, stop the loop
-    if cv2.waitKey(1) & 0xFF == ord("q"):
+    elif k == ord("q"):
         break
 
 # Cleanup the camera and close any open windows
