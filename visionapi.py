@@ -4,7 +4,10 @@ def detect_document(path):
     """Detects document features in an image."""
     from google.cloud import vision
     import io
-    client = vision.ImageAnnotatorClient()
+    from google.oauth2 import service_account
+    credentials = service_account.Credentials. from_service_account_file('C:/dev/hth/HackTheHammer2019/hackthehammerdraw-463eff03ae21.json')
+
+    client = vision.ImageAnnotatorClient(credentials=credentials)
 
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
@@ -32,4 +35,4 @@ def detect_document(path):
                         print('\tSymbol: {} (confidence: {})'.format(
                             symbol.text, symbol.confidence))
 
-detect_document("/Users/jenniferdryden/Desktop/Hello_handwriting_sample.jpg")
+detect_document("C:/dev/hth/hi.jpg")
