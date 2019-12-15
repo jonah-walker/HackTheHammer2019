@@ -35,4 +35,9 @@ def detect_document(path):
                         print('\tSymbol: {} (confidence: {})'.format(
                             symbol.text, symbol.confidence))
 
-detect_document("C:/dev/hth/hi.jpg")
+print("A:\n")
+detect_document("C:/dev/hth/test_q.png")
+# print("B:\n")
+# detect_document("C:/dev/hth/test_b.jpg")
+# print("C:\n")
+# detect_document("C:/dev/hth/test_c.jpg")

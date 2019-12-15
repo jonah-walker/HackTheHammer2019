@@ -4,11 +4,8 @@ import numpy as np
 from PIL import Image
 from array import *
 
-path = "C:\\Users\\aksha\Desktop\\test"
+path = "C:\dev\hth\\test\\"
 cap = cv2.VideoCapture(0)
-
-
-
 
 while(True):
     ret, frame = cap.read()
@@ -26,7 +23,7 @@ cv2.destroyAllWindows()
 
 path+="sensor.jpg"
 
-im = Image.open("c:\\Users\\aksha\Desktop\\test\sensor.jpg")
+im = Image.open(path)
 
 # Change these values to fit the size of your region of interest
 width, height = im.size #get image size
@@ -37,6 +34,7 @@ left = int((width/2)-50)
 top = int((height/2)-50)
 right = int((width/2)+50)
 bottom = int((height/2)+50)
+cv2.rectangle(im, (left,top), (right,bottom), (255,0,0))
 
 cropped = im.crop((left, top, right, bottom)) #crop the center of the image
 rgb = cropped.convert('RGB')  # get three R G B values

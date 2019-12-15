@@ -20,7 +20,7 @@ gindex = 0
 rindex = 0
 yindex = 0
 
-colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 255, 255)]
+colors = [(0, 0, 0), (0, 255, 0), (0, 0, 255), (255, 0, 0)]
 colorIndex = 0
 
 # Setup the Paint interface
@@ -31,10 +31,10 @@ paintWindow = cv2.rectangle(paintWindow, (275,1), (370,65), colors[1], -1)
 paintWindow = cv2.rectangle(paintWindow, (390,1), (485,65), colors[2], -1)
 paintWindow = cv2.rectangle(paintWindow, (505,1), (600,65), colors[3], -1)
 cv2.putText(paintWindow, "CLEAR ALL", (49, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-cv2.putText(paintWindow, "BLUE", (185, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+cv2.putText(paintWindow, "BLACK", (185, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 cv2.putText(paintWindow, "GREEN", (298, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
 cv2.putText(paintWindow, "RED", (420, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-cv2.putText(paintWindow, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150,150,150), 2, cv2.LINE_AA)
+cv2.putText(paintWindow, "BLUE", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
 
 cv2.namedWindow('Paint', cv2.WINDOW_AUTOSIZE)
 
@@ -42,6 +42,8 @@ cv2.namedWindow('Paint', cv2.WINDOW_AUTOSIZE)
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 letterToDraw = 97
+correct = False
+incorrect = False
 
 # Keep looping
 while True:
@@ -57,11 +59,18 @@ while True:
     frame = cv2.rectangle(frame, (390,1), (485,65), colors[2], -1)
     frame = cv2.rectangle(frame, (505,1), (600,65), colors[3], -1)
     cv2.putText(frame, "CLEAR ALL", (49, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(frame, "BLUE", (185, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.putText(frame, "BLACK", (185, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "GREEN", (298, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "RED", (420, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(frame, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150,150,150), 2, cv2.LINE_AA)
-    cv2.putText(frame, chr(letterToDraw), (230, 350), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (150,150,150), 20, cv2.LINE_AA)
+    cv2.putText(frame, "BLUE", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2, cv2.LINE_AA)
+    if correct:
+        cv2.putText(frame, "hello", (70, 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (0,255,0), 20, cv2.LINE_AA)
+    elif incorrect:
+        cv2.putText(frame, "hello", (70, 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (0,0,255), 20, cv2.LINE_AA)
+    elif not correct and not incorrect:
+        cv2.putText(frame, "hello", (70, 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (150,150,150), 20, cv2.LINE_AA)
+    # for x in range(0, 3):
+    #     cv2.putText(frame, chr(letterToDraw), (90+(x*170), 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (150,150,150), 20, cv2.LINE_AA)
 
     # Check to see if we have reached the end of the video
     if not grabbed:
@@ -139,17 +148,47 @@ while True:
             for k in range(1, len(points[i][j])):
                 if points[i][j][k - 1] is None or points[i][j][k] is None:
                     continue
-                cv2.line(frame, points[i][j][k - 1], points[i][j][k], colors[i], 2)
-                cv2.line(paintWindow, points[i][j][k - 1], points[i][j][k], colors[i], 2)
+                cv2.line(frame, points[i][j][k - 1], points[i][j][k], colors[i], 10)
+                cv2.line(paintWindow, points[i][j][k - 1], points[i][j][k], colors[i], 10)
 
     # Show the frame and the paintWindow image
     cv2.imshow("Tracking", frame)
     cv2.imshow("Paint", paintWindow)
 
     k = cv2.waitKey(1)
-    if k == ord(" "):
+    if k == ord("z"):
         crop_img = paintWindow[70:480, 0:640] # Crop from {x, y, w, h } => {0, 0, 300, 400}
-        cv2.imwrite("test_" + chr(letterToDraw) + ".png", crop_img)
+        rsz_img = cv2.resize(crop_img, (1218, 768))
+        cv2.imwrite("test_" + chr(letterToDraw) + ".png", rsz_img)
+        # cv2.namedWindow('test', cv2.WINDOW_AUTOSIZE)
+        correctIMG = cv2.imread("C:\dev\hth\HackTheHammer2019\check.png")
+        #cv2.putText(frame, "hello", (70, 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (0,255,0), 20, cv2.LINE_AA)
+        correct = True
+        # cv2.imshow("Paint", correctIMG)
+        # if letterToDraw == 99:
+        #     break
+        # else:
+        #     letterToDraw+=1
+        bpoints = [deque(maxlen=512)]
+        gpoints = [deque(maxlen=512)]
+        rpoints = [deque(maxlen=512)]
+        ypoints = [deque(maxlen=512)]
+
+        bindex = 0
+        gindex = 0
+        rindex = 0
+        yindex = 0
+
+        paintWindow[67:,:,:] = 255
+    elif k == ord("x"):
+        crop_img = paintWindow[70:480, 0:640] # Crop from {x, y, w, h } => {0, 0, 300, 400}
+        rsz_img = cv2.resize(crop_img, (1218, 768))
+        cv2.imwrite("test_" + chr(letterToDraw) + ".png", rsz_img)
+        # cv2.namedWindow('test', cv2.WINDOW_AUTOSIZE)
+        incorrectIMG = cv2.imread("C:\dev\hth\HackTheHammer2019\\x.png")
+        #cv2.putText(frame, "hello", (70, 320), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (0,255,0), 20, cv2.LINE_AA)
+        incorrect = True
+        # cv2.imshow("Paint", incorrectIMG)
         if letterToDraw == 99:
             break
         else:
@@ -165,7 +204,21 @@ while True:
         yindex = 0
 
         paintWindow[67:,:,:] = 255
+    elif k == ord(" "):
+        correct = False
+        incorrect = False
+    elif k == ord("w"):
+        bpoints = [deque(maxlen=512)]
+        gpoints = [deque(maxlen=512)]
+        rpoints = [deque(maxlen=512)]
+        ypoints = [deque(maxlen=512)]
 
+        bindex = 0
+        gindex = 0
+        rindex = 0
+        yindex = 0
+
+        paintWindow[67:,:,:] = 255
 	# If the 'q' key is pressed, stop the loop
     elif k == ord("q"):
         break
