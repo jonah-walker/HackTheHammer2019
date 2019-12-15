@@ -41,6 +41,8 @@ cv2.namedWindow('Paint', cv2.WINDOW_AUTOSIZE)
 # Load the video
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
+letterToDraw = 'hi'
+
 # Keep looping
 while True:
     # Grab the current paintWindow
@@ -59,6 +61,7 @@ while True:
     cv2.putText(frame, "GREEN", (298, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "RED", (420, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
     cv2.putText(frame, "YELLOW", (520, 33), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150,150,150), 2, cv2.LINE_AA)
+    cv2.putText(frame, letterToDraw, (230, 350), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 10, (150,150,150), 20, cv2.LINE_AA)
 
     # Check to see if we have reached the end of the video
     if not grabbed:
@@ -145,6 +148,7 @@ while True:
 
 	# If the 'q' key is pressed, stop the loop
     if cv2.waitKey(1) & 0xFF == ord("q"):
+        cv2.imwrite("test.png", paintWindow)
         break
 
 # Cleanup the camera and close any open windows
